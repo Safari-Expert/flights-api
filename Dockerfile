@@ -9,7 +9,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN go build -o backend main.go
+RUN go build -o backend .
 
 
 FROM debian:latest

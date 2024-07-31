@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"os"
 	"strings"
 )
 
@@ -21,14 +20,10 @@ type Airport struct {
 
 var cityMap map[string][]Airport
 
-func createCityMap(filePath string) (map[string][]Airport, error) {
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
+func createCityMap() (map[string][]Airport, error) {
 
 	var airports map[string]Airport
-	err = json.Unmarshal(data, &airports)
+	err := json.Unmarshal([]byte(airportList), &airports)
 	if err != nil {
 		return nil, err
 	}

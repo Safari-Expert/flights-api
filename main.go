@@ -15,12 +15,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create session: %v", err)
 	}
-
-	filePath := "airports.json" // Replace with your JSON file path
-	cityMap, err = createCityMap(filePath)
+	log.Println("Session created")
+	cityMap, err = createCityMap()
 	if err != nil {
 		log.Fatalf("Failed to create city map: %v", err)
 	}
+	log.Println("City map created")
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -33,5 +33,6 @@ func main() {
 		port = "8080"
 		log.Printf("Defaulting to port %s", port)
 	}
+	log.Printf("Listening on port %s", port)
 	app.Listen(":" + port)
 }
