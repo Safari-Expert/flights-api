@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/krisukox/google-flights-api/flights"
@@ -23,7 +24,7 @@ func GetFlights(c *fiber.Ctx) error {
 		context.Background(),
 		flights.Args{
 			Date:       flightRequest.Date,
-			ReturnDate: flightRequest.Date,
+			ReturnDate: flightRequest.Date.Add(36 * time.Hour),
 			SrcCities:  []string{flightRequest.SrcCity},
 			DstCities:  []string{flightRequest.DstCity},
 			Options: flights.Options{
@@ -31,6 +32,7 @@ func GetFlights(c *fiber.Ctx) error {
 					Adults:       flightRequest.Adults,
 					Children:     flightRequest.Children,
 					InfantInSeat: flightRequest.InfantInSeat,
+					InfantOnLap:  flightRequest.InfantOnLap,
 				},
 				Currency: currency.USD,
 				Stops:    flights.Stops(flightRequest.Stops),

@@ -9,6 +9,7 @@ type FlightRequest struct {
 	Adults       int       `json:"adults"`
 	Children     int       `json:"children"`
 	InfantInSeat int       `json:"infant_in_seat"`
+	InfantOnLap  int       `json:"infant_on_lap"`
 	Stops        int       `json:"stops"`
 	Class        int       `json:"class"`
 }
