@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/krisukox/google-flights-api/flights"
@@ -15,33 +13,43 @@ import (
 var session *flights.Session
 
 func GetFlights(c *fiber.Ctx) error {
+	var flightRequest FlightRequest
+	if err := c.BodyParser(&flightRequest); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
 	offers, priceRange, err := session.GetOffers(
 		context.Background(),
 		flights.Args{
-			Date:       time.Now().AddDate(0, 0, 30),
-			ReturnDate: time.Now().AddDate(0, 0, 37),
-			SrcCities:  []string{"Madrid"},
-			DstCities:  []string{"Estocolmo"},
+			Date:       flightRequest.Date,
+			ReturnDate: flightRequest.Date,
+			SrcCities:  []string{flightRequest.SrcCity},
+			DstCities:  []string{flightRequest.DstCity},
 			Options: flights.Options{
-				Travelers: flights.Travelers{Adults: 2},
-				Currency:  currency.EUR,
-				Stops:     flights.Stop1,
-				Class:     flights.Economy,
-				TripType:  flights.RoundTrip,
-				Lang:      language.Spanish,
+				Travelers: flights.Travelers{
+					Adults:       flightRequest.Adults,
+					Children:     flightRequest.Children,
+					InfantInSeat: flightRequest.InfantInSeat,
+				},
+				Currency: currency.USD,
+				Stops:    flights.Stops(flightRequest.Stops),
+				Class:    flights.Class(flights.Economy),
+				TripType: flights.OneWay,
+				Lang:     language.AmericanEnglish,
 			},
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
-
-	if priceRange != nil {
-		fmt.Printf("High price %d\n", int(priceRange.High))
-		fmt.Printf("Low price %d\n", int(priceRange.Low))
-	}
-	fmt.Println(offers)
-	return c.SendString("All Flights")
+	return c.JSON(fiber.Map{
+		"offers":     offers,
+		"priceRange": priceRange,
+	})
 }
 
 func GetCity(c *fiber.Ctx) error {
