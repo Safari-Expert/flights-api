@@ -4,6 +4,7 @@ import "time"
 
 type FlightRequest struct {
 	Date         time.Time `json:"date"`
+	ReturnDate   time.Time `json:"return_date"`
 	SrcCity      string    `json:"src_city"`
 	DstCity      string    `json:"dst_city"`
 	Adults       int       `json:"adults"`
