@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8081:8080"
     networks:
-      - api
+      - safari-net
 
 networks:
-  api:
+  safari-net:
     external: true
